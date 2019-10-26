@@ -1,6 +1,24 @@
 import enum
+import os
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
+
+
+CURRENT_DIR = os.path.dirname(__file__)
+
+FONT_DIR = os.path.join(CURRENT_DIR, "roboto")
+
+FONT_SIZE = 15
+
+TAG_IMAGE_HEIGHT = 25
+"""Define global tag image height
+set to 25px
+"""
+
+TEXT_PADDING = (TAG_IMAGE_HEIGHT / 2) - (FONT_SIZE / 2)
+"""This variable define the padding from the borders
+of the text
+"""
 
 
 class Border(enum.Enum):
@@ -65,14 +83,42 @@ def radius_image(image, radius, *args):
     return image
 
 
-if __name__ == "__main__":
-    #  Create base on gray scale
-    image = Image.new("RGB", (100, 25), color=(33, 33, 33))
+def tag_label(label):
+    """This function create the label section of the tag
 
-    #  Radius borders
+    Args:
+        label (str): message to show in the tag title
+
+    Return: and PIL.Image
+    """
     radius = 5
 
-    image = radius_image(image, radius, Border.LEFT_TOP, Border.LEFT_BOTTOM)
+    image = radius_image(
+        Image.new("RGB", (100, TAG_IMAGE_HEIGHT), color=(33, 33, 33)),
+        radius,
+        Border.LEFT_TOP,
+        Border.LEFT_BOTTOM,
+    )
+
+    font = ImageFont.truetype(
+        os.path.join(FONT_DIR, "Roboto-Light.ttf"),
+        FONT_SIZE
+    )
+
+    draw = ImageDraw.Draw(image)
+    draw.text(
+        (TEXT_PADDING * 2, TEXT_PADDING),
+        label,
+        font=font,
+        fill=(255, 255, 255)
+    )
+
+    return image
+
+
+if __name__ == "__main__":
+
+    label = tag_label("Echo")
 
     #  Save image
-    image.save("toto.png")
+    label.save("toto.png")
