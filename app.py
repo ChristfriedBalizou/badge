@@ -38,6 +38,15 @@ class Border(enum.Enum):
     RIGHT_BOTTOM = 4
 
 
+class ConcatStrategy(enum.Enum):
+    """This class aim to enum concatenation strategy
+    to join images
+    """
+
+    HORIZONTAL = 1
+    VERTICAL = 2
+
+
 def radius_image(image, radius, *args):
     """This function add a radius border to an
     image
@@ -142,7 +151,7 @@ def tag_label(label):
     Return: and PIL.Image
     """
 
-    width = (len(label) * TEXT_PADDING_RATIO)
+    width = len(label) * TEXT_PADDING_RATIO
 
     image = build_image(
         (width + WIDTH_PADDING, TAG_IMAGE_HEIGHT),
@@ -153,9 +162,49 @@ def tag_label(label):
     return set_text(image, label)
 
 
+def concat_images(strategy, *args):
+    """This function take a strategy in argument
+    how to concatenate images
+
+    Args:
+        strategy (ConcatStrategy): way to concatenate
+        args (List[PIL.Image]): images to concat
+
+    Return: a PIL.Image
+    """
+
+    widths, heights = zip(*(image.size for image in args))
+
+    if strategy.HORIZONTAL:
+        size = (sum(widths), max(heights))
+
+    if strategy.VERTICAL:
+        size = (max(widths), sum(heights))
+
+    board = Image.new("RGB", size)
+
+    offset = 0
+
+    for image in args:
+
+        if strategy.HORIZONTAL:
+            board.paste(image, (offset, 0))
+            offset += image.size[0]
+
+        if strategy.VERTICAL:
+            board.paste(image, (0, offset))
+            offset += image.size[1]
+
+    return board
+
+
 if __name__ == "__main__":
 
-    label = tag_label("Echo")
+    image = concat_images(
+        ConcatStrategy.HORIZONTAL,
+        tag_label("hello"),
+        tag_label("Status"),
+    )
 
     #  Save image
-    label.save("toto.png")
+    image.save("toto.png")
