@@ -10,12 +10,12 @@ FONT_DIR = os.path.join(CURRENT_DIR, "roboto")
 
 FONT_SIZE = 15
 
-TAG_IMAGE_HEIGHT = 25
-"""Define global tag image height
+BADGE_IMAGE_HEIGHT = 25
+"""Define global badge image height
 set to 25px
 """
 
-BORDER_RADIUS = 5
+RADIUS_WIDTH = 2
 
 WIDTH_PADDING = 5
 """Use to pad on right and left text
@@ -25,6 +25,29 @@ TEXT_PADDING_RATIO = 7
 """Let's pretend that padding a single
 char require 5px to be correctly fit
 """
+
+LABEL_BACKGROUND_COLOR = (33, 33, 33)
+
+
+class StatusColor(enum.Enum):
+    """Define color class enumeration
+    To use for each status section
+    """
+
+    FAILURE = 1
+    PENDING = 2
+    INFO = 3
+    UNKNOW = 4
+    PASSING = 5
+
+
+COLOR_PALLETTE = {
+    StatusColor.FAILURE: (244, 67, 54),
+    StatusColor.PENDING: (63, 81, 181),
+    StatusColor.INFO: (103, 58, 183),
+    StatusColor.UNKNOW: (158, 158, 158),
+    StatusColor.PASSING: (76, 175, 80),
+}
 
 
 class Border(enum.Enum):
@@ -98,7 +121,7 @@ def radius_image(image, radius, *args):
     return image
 
 
-def build_image(size, color, radius=None):
+def build_image(size, color=None, radius=None):
     """This function create an image using the size
     and the color
 
@@ -142,11 +165,11 @@ def set_text(image, label):
     return image
 
 
-def tag_label(label):
-    """This function create the label section of the tag
+def badge_label(label, color=None):
+    """This function create the label section of the badge
 
     Args:
-        label (str): message to show in the tag title
+        label (str): message to show in the badge title
 
     Return: and PIL.Image
     """
@@ -154,8 +177,8 @@ def tag_label(label):
     width = len(label) * TEXT_PADDING_RATIO
 
     image = build_image(
-        (width + WIDTH_PADDING, TAG_IMAGE_HEIGHT),
-        (33, 33, 33),
+        (width + WIDTH_PADDING, BADGE_IMAGE_HEIGHT),
+        color=color,
         radius=None
     )
 
@@ -173,12 +196,12 @@ def concat_images(strategy, *args):
     Return: a PIL.Image
     """
 
-    widths, heights = zip(*(image.size for image in args))
+    widths, heights = zip(*(x.size for x in args))
 
-    if strategy.HORIZONTAL:
+    if strategy == ConcatStrategy.HORIZONTAL:
         size = (sum(widths), max(heights))
 
-    if strategy.VERTICAL:
+    if strategy == ConcatStrategy.VERTICAL:
         size = (max(widths), sum(heights))
 
     board = Image.new("RGB", size)
@@ -187,11 +210,11 @@ def concat_images(strategy, *args):
 
     for image in args:
 
-        if strategy.HORIZONTAL:
+        if strategy == ConcatStrategy.HORIZONTAL:
             board.paste(image, (offset, 0))
             offset += image.size[0]
 
-        if strategy.VERTICAL:
+        if strategy == ConcatStrategy.VERTICAL:
             board.paste(image, (0, offset))
             offset += image.size[1]
 
@@ -202,9 +225,15 @@ if __name__ == "__main__":
 
     image = concat_images(
         ConcatStrategy.HORIZONTAL,
-        tag_label("hello"),
-        tag_label("Status"),
+        badge_label("foo", color=LABEL_BACKGROUND_COLOR),
+        badge_label("bar", color=COLOR_PALLETTE[StatusColor.PENDING]),
     )
 
-    #  Save image
-    image.save("toto.png")
+    radius_image(
+        image,
+        RADIUS_WIDTH,
+        Border.LEFT_TOP,
+        Border.LEFT_BOTTOM,
+        Border.RIGHT_TOP,
+        Border.RIGHT_BOTTOM,
+    ).save("toto.png")
