@@ -15,9 +15,15 @@ TAG_IMAGE_HEIGHT = 25
 set to 25px
 """
 
-TEXT_PADDING = (TAG_IMAGE_HEIGHT / 2) - (FONT_SIZE / 2)
-"""This variable define the padding from the borders
-of the text
+BORDER_RADIUS = 5
+
+WIDTH_PADDING = 5
+"""Use to pad on right and left text
+"""
+
+TEXT_PADDING_RATIO = 7
+"""Let's pretend that padding a single
+char require 5px to be correctly fit
 """
 
 
@@ -83,6 +89,50 @@ def radius_image(image, radius, *args):
     return image
 
 
+def build_image(size, color, radius=None):
+    """This function create an image using the size
+    and the color
+
+    Args:
+        size (Tuple[str, str]): width and height of the image
+        color (Tuple[str, str, str]): RGB color code
+        radius (Tuple[int, List[str]]): radius information
+
+    Return: an PIL.Image
+    """
+
+    image = Image.new("RGB", size, color=color)
+
+    if radius:
+        radius_size, sides = radius
+        image = radius_image(image, radius_size, *sides)
+
+    return image
+
+
+def set_text(image, label):
+    """This function insert text over an image
+
+    Args:
+        image (PIL.Image): pillow image
+        label (str): text to add on the image
+
+    Return: a PIL.Image
+    """
+    font = ImageFont.truetype(
+        os.path.join(FONT_DIR, "Roboto-Light.ttf"), FONT_SIZE
+    )
+
+    _, height = image.size
+
+    padding = (height / 2) - (FONT_SIZE / 2)
+
+    draw = ImageDraw.Draw(image)
+    draw.text((WIDTH_PADDING, padding), label, font=font, fill=(255, 255, 255))
+
+    return image
+
+
 def tag_label(label):
     """This function create the label section of the tag
 
@@ -91,29 +141,16 @@ def tag_label(label):
 
     Return: and PIL.Image
     """
-    radius = 5
 
-    image = radius_image(
-        Image.new("RGB", (100, TAG_IMAGE_HEIGHT), color=(33, 33, 33)),
-        radius,
-        Border.LEFT_TOP,
-        Border.LEFT_BOTTOM,
+    width = (len(label) * TEXT_PADDING_RATIO)
+
+    image = build_image(
+        (width + WIDTH_PADDING, TAG_IMAGE_HEIGHT),
+        (33, 33, 33),
+        radius=None
     )
 
-    font = ImageFont.truetype(
-        os.path.join(FONT_DIR, "Roboto-Light.ttf"),
-        FONT_SIZE
-    )
-
-    draw = ImageDraw.Draw(image)
-    draw.text(
-        (TEXT_PADDING * 2, TEXT_PADDING),
-        label,
-        font=font,
-        fill=(255, 255, 255)
-    )
-
-    return image
+    return set_text(image, label)
 
 
 if __name__ == "__main__":
