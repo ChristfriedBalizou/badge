@@ -11,9 +11,9 @@ FONT_DIR = os.path.join(CURRENT_DIR, "roboto")
 
 FONT_SIZE = 15
 
-BADGE_IMAGE_HEIGHT = 25
+BADGE_IMAGE_HEIGHT = 20
 """Define global badge image height
-set to 25px
+set to 20px
 """
 
 WIDTH_PADDING = 5
