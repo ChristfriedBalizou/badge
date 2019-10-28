@@ -20,6 +20,8 @@ WIDTH_PADDING = 5
 """Use to pad on right and left text
 """
 
+RADIUS_WIDTH = 6
+
 TEXT_PADDING_RATIO = 10
 """Let's pretend that padding a single
 char require 5px to be correctly fit
@@ -101,7 +103,9 @@ def set_text(image, label):
     padding = (height / 2) - (FONT_SIZE / 2)
 
     draw = ImageDraw.Draw(image)
-    draw.text((WIDTH_PADDING, padding), label, font=font, fill=(255, 255, 255))
+    draw.text(
+        (WIDTH_PADDING, padding - 1), label, font=font, fill=(255, 255, 255)
+    )
 
     return image
 
@@ -118,8 +122,7 @@ def badge_label(label, color=None):
     width = len(label) * TEXT_PADDING_RATIO
 
     image = build_image(
-        (width + WIDTH_PADDING, BADGE_IMAGE_HEIGHT),
-        color=color,
+        (width + WIDTH_PADDING, BADGE_IMAGE_HEIGHT), color=color
     )
 
     return set_text(image, label)
@@ -161,6 +164,45 @@ def concat_images(strategy, *args):
     return board
 
 
+def radius_image(image, radius):
+    """This function add a radius border to an
+    image
+
+    Inspired by @fraxel
+    https://stackoverflow.com/a/11291419
+
+    Args:
+        image (Image): a pillow image
+        radius (int): how much radius to curve
+
+    Return: an image radius shaped
+    """
+
+    circle = Image.new("L", (radius * 2, radius * 2), 0)
+
+    ImageDraw.Draw(circle).ellipse((0, 0, radius * 2, radius * 2), fill=255)
+
+    alpha = Image.new("L", image.size, 255)
+
+    width, height = image.size
+
+    alpha.paste(circle.crop((0, 0, radius, radius)), (0, 0))
+    alpha.paste(
+        circle.crop((0, radius, radius, radius * 2)), (0, height - radius)
+    )
+    alpha.paste(
+        circle.crop((radius, 0, radius * 2, radius)), (width - radius, 0)
+    )
+    alpha.paste(
+        circle.crop((radius, radius, radius * 2, radius * 2)),
+        (width - radius, height - radius),
+    )
+
+    image.putalpha(alpha)
+
+    return image
+
+
 def badge(label, message, status):
     """This function generate a badge image
 
@@ -172,21 +214,23 @@ def badge(label, message, status):
     Return: PIL.Image
     """
 
-    return concat_images(
+    image = concat_images(
         ConcatStrategy.HORIZONTAL,
         badge_label(label, color=LABEL_BACKGROUND_COLOR),
-        badge_label(message, color=COLOR_PALLETTE[StatusColor(status)])
+        badge_label(message, color=COLOR_PALLETTE[StatusColor(status)]),
     )
+
+    return radius_image(image, RADIUS_WIDTH)
 
 
 @click.command("badge")
-@click.option('--label', help="The badge label.")
-@click.option('--message', help="Message to display in the badge.")
-@click.option('--output', help="Image output path")
+@click.option("--label", help="The badge label.")
+@click.option("--message", help="Message to display in the badge.")
+@click.option("--output", help="Image output path")
 @click.option(
-    '--status',
-    type=click.Choice(map(str, range(1,6))),
-    help="Status of badge color switch"
+    "--status",
+    type=click.Choice(map(str, range(1, 6))),
+    help="Status of badge color switch",
 )
 def cli(label, message, status, output):
     """Command line interface to
