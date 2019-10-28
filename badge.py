@@ -167,45 +167,6 @@ def concat_images(strategy, *args):
     return board
 
 
-def radius_image(image, radius):
-    """This function add a radius border to an
-    image
-
-    Inspired by @fraxel
-    https://stackoverflow.com/a/11291419
-
-    Args:
-        image (Image): a pillow image
-        radius (int): how much radius to curve
-
-    Return: an image radius shaped
-    """
-
-    circle = Image.new("L", (radius * 2, radius * 2), 0)
-
-    ImageDraw.Draw(circle).ellipse((0, 0, radius * 2, radius * 2), fill=255)
-
-    alpha = Image.new("L", image.size, 255)
-
-    width, height = image.size
-
-    alpha.paste(circle.crop((0, 0, radius, radius)), (0, 0))
-    alpha.paste(
-        circle.crop((0, radius, radius, radius * 2)), (0, height - radius)
-    )
-    alpha.paste(
-        circle.crop((radius, 0, radius * 2, radius)), (width - radius, 0)
-    )
-    alpha.paste(
-        circle.crop((radius, radius, radius * 2, radius * 2)),
-        (width - radius, height - radius),
-    )
-
-    image.putalpha(alpha)
-
-    return image
-
-
 def badge(label, message, status):
     """This function generate a badge image
 
@@ -217,13 +178,11 @@ def badge(label, message, status):
     Return: PIL.Image
     """
 
-    image = concat_images(
+    return concat_images(
         ConcatStrategy.HORIZONTAL,
         badge_label(label, color=LABEL_BACKGROUND_COLOR),
         badge_label(message, color=COLOR_PALLETTE[StatusColor(status)]),
     )
-
-    return radius_image(image, RADIUS_WIDTH)
 
 
 @click.command("badge")
