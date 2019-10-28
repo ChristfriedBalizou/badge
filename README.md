@@ -54,13 +54,13 @@ Options:
   
 * Badge with a UNKNWON status=4
   ```bash
-  python badge.py --label development --message "? " --status 4 --output unknown.png
+  python badge.py --label development --message ? --status 4 --output unknown.png
   ```
   ![Running Version](https://github.com/ChristfriedBalizou/badge/raw/master/showcase/unknown.png "Unknown status")
   
 * Badge with a PASSING status=5
   ```bash
-  python badge.py --label build --message "passing " --status 5 --output passing.png
+  python badge.py --label build --message passing --status 5 --output passing.png
   ```
   ![Build Status](https://github.com/ChristfriedBalizou/badge/raw/master/showcase/passing.png "Build Passing")
 
