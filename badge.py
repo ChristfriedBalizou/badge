@@ -44,7 +44,7 @@ class StatusColor(enum.Enum):
 
 COLOR_PALLETTE = {
     StatusColor.FAILURE: (244, 67, 54),
-    StatusColor.PENDING: (63, 81, 181),
+    StatusColor.PENDING: (33 ,150 ,243),
     StatusColor.INFO: (103, 58, 183),
     StatusColor.UNKNOWN: (158, 158, 158),
     StatusColor.PASSING: (76, 175, 80),
