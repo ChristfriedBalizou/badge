@@ -27,7 +27,7 @@ TEXT_PADDING_RATIO = 10
 char require 5px to be correctly fit
 """
 
-LABEL_BACKGROUND_COLOR = (33, 33, 33)
+LABEL_BACKGROUND_COLOR = (66, 66, 66)
 
 
 class StatusColor(enum.Enum):
