@@ -11,9 +11,9 @@ FONT_DIR = os.path.join(CURRENT_DIR, "roboto")
 
 FONT_SIZE = 15
 
-BADGE_IMAGE_HEIGHT = 20
+BADGE_IMAGE_HEIGHT = 35
 """Define global badge image height
-set to 20px
+set to 35px
 """
 
 WIDTH_PADDING = 5
@@ -104,7 +104,10 @@ def set_text(image, label):
 
     draw = ImageDraw.Draw(image)
     draw.text(
-        (WIDTH_PADDING, padding - 1), label, font=font, fill=(255, 255, 255)
+        (WIDTH_PADDING, padding - 1),
+        label.upper(),
+        font=font,
+        fill=(255, 255, 255)
     )
 
     return image
