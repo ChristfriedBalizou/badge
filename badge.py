@@ -9,11 +9,11 @@ CURRENT_DIR = os.path.dirname(__file__)
 
 FONT_DIR = os.path.join(CURRENT_DIR, "roboto")
 
-FONT_SIZE = 15
+FONT_SIZE = 12
 
-BADGE_IMAGE_HEIGHT = 35
+BADGE_IMAGE_HEIGHT = 25
 """Define global badge image height
-set to 35px
+set to 25px
 """
 
 WIDTH_PADDING = 5
@@ -95,7 +95,7 @@ def set_text(image, label):
     Return: a PIL.Image
     """
     font = ImageFont.truetype(
-        os.path.join(FONT_DIR, "Roboto-Light.ttf"), FONT_SIZE
+        os.path.join(FONT_DIR, "Roboto-Bold.ttf"), FONT_SIZE
     )
 
     _, height = image.size
