@@ -1,6 +1,7 @@
 import enum
 import os
 
+import click
 from PIL import Image, ImageDraw, ImageFont
 
 
@@ -37,7 +38,7 @@ class StatusColor(enum.Enum):
     FAILURE = 1
     PENDING = 2
     INFO = 3
-    UNKNOW = 4
+    UNKNOWN = 4
     PASSING = 5
 
 
@@ -45,7 +46,7 @@ COLOR_PALLETTE = {
     StatusColor.FAILURE: (244, 67, 54),
     StatusColor.PENDING: (63, 81, 181),
     StatusColor.INFO: (103, 58, 183),
-    StatusColor.UNKNOW: (158, 158, 158),
+    StatusColor.UNKNOWN: (158, 158, 158),
     StatusColor.PASSING: (76, 175, 80),
 }
 
@@ -221,19 +222,49 @@ def concat_images(strategy, *args):
     return board
 
 
-if __name__ == "__main__":
+def badge(label, message, status):
+    """This function generate a badge image
 
+    Args:
+        label (str): the message display in the label section
+        message (str): message to display in the status
+        status (int): integer value representing the status
+
+    Return: PIL.Image
+    """
     image = concat_images(
         ConcatStrategy.HORIZONTAL,
-        badge_label("foo", color=LABEL_BACKGROUND_COLOR),
-        badge_label("bar", color=COLOR_PALLETTE[StatusColor.PENDING]),
+        badge_label(label, color=LABEL_BACKGROUND_COLOR),
+        badge_label(message, color=COLOR_PALLETTE[StatusColor(status)]),
     )
 
-    radius_image(
+    return radius_image(
         image,
         RADIUS_WIDTH,
         Border.LEFT_TOP,
         Border.LEFT_BOTTOM,
         Border.RIGHT_TOP,
         Border.RIGHT_BOTTOM,
-    ).save("toto.png")
+    )
+
+
+@click.command("badge")
+@click.option('--label', help="The badge label.")
+@click.option('--message', help="Message to display in the badge.")
+@click.option('--output', help="Image output path")
+@click.option(
+    '--status',
+    type=click.Choice(map(str, range(1,6))),
+    help="Status of badge color switch"
+)
+def cli(label, message, status, output):
+    """Command line interface to
+    use badge
+    """
+
+    badge(label, message, int(status)).save(output)
+    print("Image path: " + output)
+
+
+if __name__ == "__main__":
+    cli()
