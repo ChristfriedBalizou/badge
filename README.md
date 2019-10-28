@@ -34,35 +34,33 @@ Options:
 
 ## Showcase
 
-<ol>
-    <li>
-        Badge with a "FAILURE" status (1)
-        `python badge.py --label build --message failed --status 1 --output failed.png`
+* Badge with a FAILURE status=1
+  ```bash
+  python badge.py --label build --message failed --status 1 --output failed.png
+  ```
+  ![Build Status](https://github.com/ChristfriedBalizou/badge/raw/master/showcase/failed.png "Build Falling")
+  
+* Badge with a PENDING status=2
+  ```bash
+  python badge.py --label build --message running --status 2 --output running.png
+  ```
+  ![Build Status](https://github.com/ChristfriedBalizou/badge/raw/master/showcase/running.png "Build Running")
 
-        ![Build Status]("https://github.com/ChristfriedBalizou/badge/raw/master/showcase/failed.png", "Build Falling")
-    </li>
-    <li>
-        Badge with a "PENDING" status (2)
-        `python badge.py --label build --message running --status 2 --output running.png`
+* Badge with a INFO status=3
+  ```bash
+  python badge.py --label production --message v1.0 --status 3 --output production.png
+  ```
+  ![Running Version](https://github.com/ChristfriedBalizou/badge/raw/master/showcase/production.png "Running version")
+  
+* Badge with a UNKNWON status=4
+  ```bash
+  python badge.py --label development --message "? " --status 4 --output unknown.png
+  ```
+  ![Running Version](https://github.com/ChristfriedBalizou/badge/raw/master/showcase/unknown.png "Unknown status")
+  
+* Badge with a PASSING status=5
+  ```bash
+  python badge.py --label build --message "passing " --status 5 --output passing.png
+  ```
+  ![Build Status](https://github.com/ChristfriedBalizou/badge/raw/master/showcase/passing.png "Build Passing")
 
-        ![Build Status]("https://github.com/ChristfriedBalizou/badge/raw/master/showcase/runnin.png", "Build Running")
-    </li>
-    <li>
-        Badge with a "INFO" status (3)
-        `python badge.py --label production --message v1.0 --status 3 --output production.png`
-
-        ![Running Version]("https://github.com/ChristfriedBalizou/badge/raw/master/showcase/production.png", "Running version")
-    </li>
-    <li>
-        Badge with a "UNKNWON" status (4)
-        `python badge.py --label development --message "? " --status 4 --output unknown.png`
-
-        ![Running Version]("https://github.com/ChristfriedBalizou/badge/raw/master/showcase/unknwon.png", "Unknown status")
-    </li>
-    <li>
-        Badge with a "PASSING" status (1)
-        `python badge.py --label build --message "passing " --status 5 --output passing.png`
-
-        ![Build Status]("https://github.com/ChristfriedBalizou/badge/raw/master/showcase/passing.png", "Build Passing")
-    </li>
-</ol>
